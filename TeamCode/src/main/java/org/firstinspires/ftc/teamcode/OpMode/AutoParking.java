@@ -1,3 +1,5 @@
+
+
 package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -24,31 +26,18 @@ public class AutoParking extends LinearOpMode {
         intake = hardwareMap.get(CRServo.class, "intake");
         armMotor = hardwareMap.get(DcMotorEx.class, "left_arm");
 
+        //reverse the motor to be backwards because of orientation
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotor.Direction.FORWARD);
         rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
 
-        // Set all motors to brake when power is zero
-//        leftFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-//        rightFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-//        leftBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-//        rightBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
+        //wait until you hit start to go
         waitForStart();
 
-        // Unpark: Move forward to unpark
-        IntakeRotation(intakeOperations.INTAKE_IN, 0.5f, 1);
-        IntakeRotation(intakeOperations.INTAKE_OUT, 0.5f, 1);
+        //put the code for the movement here
 
-        ArmRotation(armOperations.ARM_BACKWARDS, 1, 1);
-
-
-        sleep(1000); // Pause before parking
-
-        // Park: Move backward to park
-        /*moveBackward(0.5, 1000); // Adjust power and time as needed
-        stopMotors();*/
+        // example: IntakeRotation(intakeOperations.INTAKE_IN, 0.5f, 1);
     }
 
     enum movement {
@@ -70,62 +59,79 @@ public class AutoParking extends LinearOpMode {
 
     private void move(movement movement, double power, int duration) {
         if(movement == AutoParking.movement.FORWARD)  {
+            //set all motors to positive power to move forward
             leftFrontDrive.setPower(power);
             rightFrontDrive.setPower(power);
             leftBackDrive.setPower(power);
             rightBackDrive.setPower(power);
 
         } else if(movement == AutoParking.movement.BACKWARDS) {
+            //set all motors to negative power to move backwards
             leftFrontDrive.setPower(-power);
             rightFrontDrive.setPower(-power);
             leftBackDrive.setPower(-power);
             rightBackDrive.setPower(-power);
 
         } else if(movement == AutoParking.movement.LEFT) {
+            //set diagonal motors to negative to move left
             leftFrontDrive.setPower(-power);
             rightFrontDrive.setPower(power);
             leftBackDrive.setPower(power);
             rightBackDrive.setPower(-power);
 
         } else if(movement == AutoParking.movement.RIGHT) {
+            //set diagonal motors to positive to move right
             leftFrontDrive.setPower(power);
             rightFrontDrive.setPower(-power);
             leftBackDrive.setPower(-power);
             rightBackDrive.setPower(power);
         }
+        //sleep for duration so not instant
         sleep(duration);
+        //stop the motors
         stopMotors();
     }
 
     private void IntakeRotation(intakeOperations operation, double power, int duration) {
         if(operation == intakeOperations.INTAKE_IN) {
+            //move the intake in
             intake.setPower(power);
         } else if(operation == intakeOperations.INTAKE_OUT) {
+            //move the intake out
             intake.setPower(-power);
         }
+        //sleep for duration so not instant
         sleep(duration);
+        //stop the motors
         stopIntake();
     }
     private void ArmRotation(armOperations operation, double power, int duration) {
+        //if it's operation is = to forwards, make it positive
         if(operation == armOperations.ARM_FORWARD) {
             armMotor.setPower(power);
         } else if(operation == armOperations.ARM_BACKWARDS) {
+            //if = to backwards, back it negative
             armMotor.setPower(-power);
         }
+        //sleep for duration so not instant
         sleep(duration);
+        //stop the motors
         stopArm();
     }
 
     private void stopMotors() {
+        //stop all motors
         leftFrontDrive.setPower(0);
         rightFrontDrive.setPower(0);
         leftBackDrive.setPower(0);
         rightBackDrive.setPower(0);
     }
     private void stopIntake() {
+        //stop the intake
         intake.setPower(0);
     }
     private void stopArm() {
+        //stop the arm
         armMotor.setPower(0);
     }
 }
